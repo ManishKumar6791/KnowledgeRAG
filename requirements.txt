@@ -1,0 +1,8 @@
+torch
+sentence-transformers
+chromadb
+beautifulsoup4
+requests
+langchain-community
+docling
+docling-core
