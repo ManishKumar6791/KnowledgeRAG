@@ -1,12 +1,12 @@
 import gradio as gr
-from processor import KnowledgeRAGProcessor
+from processor import DocumentProcessor
 
 # Paths
 PDF_FOLDER = "docs"
 URL_FILE = "urls.txt"
 
 # Initialize processor
-processor = KnowledgeRAGProcessor()
+processor = DocumentProcessor()
 
 # Load existing collection or process PDFs/URLs
 processor.load_or_update(pdf_folder=PDF_FOLDER, url_file=URL_FILE)
