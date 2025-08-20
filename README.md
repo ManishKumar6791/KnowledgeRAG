@@ -19,13 +19,13 @@ KnowledgeRAG is a demo system that combines document processing, web scraping, a
 ---
 
 ## **Tech Stack**
-- Python 3.10+
+- [Python 3.10+](https://www.python.org/downloads/release/python-3100/)
 - [PyTorch](https://pytorch.org/)
 - [SentenceTransformers](https://www.sbert.net/)
 - [ChromaDB](https://www.trychroma.com/)
 - [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
 - [Ollama LLM](https://ollama.com/)
-- [Docling](https://github.com/docling/docling)
+- [Docling](https://github.com/docling-project/docling)
 
 ---
 
