@@ -40,35 +40,24 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-
-**Follow prompts to:**
-- Provide a PDF file, folder of PDFs, or a web URL.
-- Ask questions and get summarized answers.
-
-**Example Usage**
-- Enter file/folder path or URL: docs/sample1.pdf
-- Enter your query: Summarize the main ideas about machine learning from these sources.
-
-**Output:**
-Concise, context-aware answer retrieved from PDF and/or web sources.
+- System will automatically process PDFs in docs/ and URLs in urls.txt
+- Once processed, you can query using the Gradio interface
 
 ## **Demo Data**
 - docs/ – Sample PDFs for testing
-- examples/ – Sample web URLs
+- urls.txt – Sample web URLs
 - vector_db/ – ChromaDB persistent storage (auto-populated)
 
 ```plaintext
 Folder Structure
 KnowledgeRAG/
-│
-├─ README.md
-├─ requirements.txt
-├─ main.py
-├─ processor.py
-├─ vector_db/
 ├─ docs/
-├─ examples/
-└─ .gitignore
+├─ vector_db/
+├─ urls.txt
+├─ processor.py
+├─ main.py
+├─ requirements.txt
+└─ README.md
 ```
 
 
