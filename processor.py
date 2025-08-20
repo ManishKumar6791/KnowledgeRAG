@@ -70,18 +70,50 @@ class DocumentProcessor:
             "page_info": None,
             "content_type": None
         }
-        if hasattr(chunk, 'meta'):
-            if hasattr(chunk.meta, 'headings') and chunk.meta.headings:
-                metadata["headings"] = chunk.meta.headings
-            if hasattr(chunk.meta, 'doc_items'):
-                for item in chunk.meta.doc_items:
-                    if hasattr(item, 'label'):
-                        metadata["content_type"] = str(item.label)
-                    if hasattr(item, 'prov') and item.prov:
-                        for prov in item.prov:
-                            if hasattr(prov, 'page_no'):
-                                metadata["page_info"] = prov.page_no
+
+        try:
+            if hasattr(chunk, 'meta'):
+                # 1. Direct headings
+                if hasattr(chunk.meta, 'headings') and chunk.meta.headings:
+                    metadata["headings"] = chunk.meta.headings
+
+                # 2. Structured doc_items
+                if hasattr(chunk.meta, 'doc_items'):
+                    for item in chunk.meta.doc_items:
+                        if hasattr(item, 'label'):
+                            metadata["content_type"] = str(item.label)
+                        if hasattr(item, 'text') and item.label in ["Heading", "Title", "Subtitle"]:
+                            metadata["headings"].append(item.text.strip())
+
+                # 3. Provenance info (pages)
+                if hasattr(chunk.meta, 'doc_items'):
+                    for item in chunk.meta.doc_items:
+                        if hasattr(item, 'prov') and item.prov:
+                            for prov in item.prov:
+                                if hasattr(prov, 'page_no'):
+                                    metadata["page_info"] = prov.page_no
+
+            # 4. Fallback: Regex guess
+            if not metadata["headings"]:
+                heading_guess = self.detect_heading(chunk.text)
+                if heading_guess:
+                    metadata["headings"] = [heading_guess]
+
+        except Exception as e:
+            print(f"Error extracting metadata: {e}")
+
         return metadata
+
+
+    def detect_heading(self, text: str) -> str:
+        import re
+        lines = text.split("\n")
+        for line in lines[:2]:
+            if re.match(r"^\d+(\.\d+)*\s+[A-Z][A-Za-z\s]{2,}$", line.strip()):
+                return line.strip()
+            if line.isupper() and len(line.split()) < 10:
+                return line.strip()
+        return None
     
     def load_or_update(self, pdf_folder: str, url_file: str):
         """
