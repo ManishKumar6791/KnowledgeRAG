@@ -82,6 +82,67 @@ class DocumentProcessor:
                             if hasattr(prov, 'page_no'):
                                 metadata["page_info"] = prov.page_no
         return metadata
+    
+    def load_or_update(self, pdf_folder: str, url_file: str):
+        """
+        Load existing ChromaDB collection, or process PDFs/URLs if missing.
+        
+        - Checks if the ChromaDB collection exists.
+        - If exists: loads collection.
+        - If not: processes PDFs in `pdf_folder` and URLs in `url_file`.
+        - Converts embeddings to lists and adds them to the collection.
+        - Handles exceptions for PDFs, URLs, and ChromaDB operations.
+        """
+        try:
+            # Check if ChromaDB exists
+            chroma_exists = os.path.exists(self.db_path) and any(
+                fname.endswith(".sqlite3") or fname.endswith(".db")
+                for fname in os.listdir(self.db_path)
+            )
+
+            if chroma_exists:
+                print("ChromaDB exists. Loading collection...")
+                self.chroma_client = chromadb.PersistentClient(path=str(self.db_path))
+                self.collection = self.chroma_client.get_or_create_collection(name=self.index_name)
+                print(f"Loaded collection '{self.index_name}' with {self.collection.count()} records.")
+            else:
+                print("ChromaDB does not exist. Processing new documents and URLs...")
+                
+                # Process PDFs
+                if os.path.exists(pdf_folder):
+                    self.process_documents(pdf_folder)
+                else:
+                    print(f"PDF folder '{pdf_folder}' not found. Skipping PDF processing.")
+
+                # Process URLs
+                if os.path.exists(url_file):
+                    with open(url_file, "r") as f:
+                        urls = [line.strip() for line in f if line.strip()]
+                    for url in urls:
+                        try:
+                            print(f"Processing URL: {url}")
+                            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+                            if response.status_code == 200:
+                                text_chunks = [p.get_text() for p in BeautifulSoup(response.text, "html.parser").find_all("p")]
+                                for i, chunk_text in enumerate(text_chunks):
+                                    if chunk_text.strip():
+                                        embedding = self.embed_model.encode(chunk_text).tolist()
+                                        self.collection.add(
+                                            documents=[chunk_text],
+                                            embeddings=[embedding],
+                                            metadatas=[{"source_url": url}],
+                                            ids=[f"{url}_{i}"]
+                                        )
+                            else:
+                                print(f"Skipping URL {url}, status code: {response.status_code}")
+                        except Exception as e:
+                            print(f"Error processing URL {url}: {e}")
+                else:
+                    print(f"URL file '{url_file}' not found. Skipping URL processing.")
+
+        except Exception as e:
+            print(f"Error loading or updating ChromaDB: {e}")
+
 
     def process_pdf(self, pdf_path: str) -> List[Dict[str, Any]]:
         print(f"Processing PDF: {pdf_path}")
@@ -99,24 +160,28 @@ class DocumentProcessor:
 
     def process_web_content(self, url: str) -> List[Dict[str, Any]]:
         print(f"Scraping URL: {url}")
-        response = requests.get(url)
-        if response.status_code != 200:
-            print(f"Failed to fetch {url}: {response.status_code}")
-            return []
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")           
+             # Extract all visible text
+            texts = [p.get_text(strip=True) for p in soup.find_all("p") if p.get_text(strip=True)]
+            chunks = []
+            for i, text in enumerate(texts):
+                chunks.append({
+                    "text": text,
+                    "headings": [],
+                    "page_info": None,
+                    "content_type": "web",
+                    "source_file": url
+                })
+            return chunks
+        else:
+            print(f"Failed to fetch page, status code: {response.status_code}")
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        # Extract all visible text
-        texts = [p.get_text(strip=True) for p in soup.find_all("p") if p.get_text(strip=True)]
-        chunks = []
-        for i, text in enumerate(texts):
-            chunks.append({
-                "text": text,
-                "headings": [],
-                "page_info": None,
-                "content_type": "web",
-                "source_file": url
-            })
-        return chunks
+       
 
     def process_documents(self, input_path: str):
         all_chunks = []
@@ -159,6 +224,9 @@ class DocumentProcessor:
             ids=ids
         )
         print(f"Stored {len(documents)} chunks in ChromaDB.")
+
+    
+
 
     def query(self, question: str, k: int = 5) -> str:
         query_embedding = self.embed_model.encode(question)
