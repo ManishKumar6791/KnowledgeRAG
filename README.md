@@ -34,22 +34,22 @@ KnowledgeRAG is a demo system that combines document processing, web scraping, a
 git clone https://github.com/yourusername/KnowledgeRAG.git
 cd KnowledgeRAG
 pip install -r requirements.txt
-
+```
 
 ## **Quick Start (Run in One Line)**
 ```bash
 python main.py
+```
 
-
-Follow prompts to:
+**Follow prompts to:**
 - Provide a PDF file, folder of PDFs, or a web URL.
 - Ask questions and get summarized answers.
 
-Example Usage
+**Example Usage**
 - Enter file/folder path or URL: docs/sample1.pdf
 - Enter your query: Summarize the main ideas about machine learning from these sources.
 
-Output:
+**Output:**
 Concise, context-aware answer retrieved from PDF and/or web sources.
 
 ## **Demo Data**
@@ -69,5 +69,6 @@ KnowledgeRAG/
 ├─ docs/
 ├─ examples/
 └─ .gitignore
+```
 
 
