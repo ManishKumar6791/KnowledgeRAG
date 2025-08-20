@@ -17,7 +17,7 @@ def main():
             print("Goodbye!")
             break
 
-        answer = processor.query(question)
+        answer = processor.process_documents(question)
         print("\nAnswer:")
         print(answer)
         print("-" * 80)
