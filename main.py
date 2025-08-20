@@ -1,26 +1,28 @@
-from processor import DocumentProcessor
+import gradio as gr
+from processor import KnowledgeRAGProcessor
 
-def main():
-    processor = DocumentProcessor()
+# Paths
+PDF_FOLDER = "docs"
+URL_FILE = "urls.txt"
 
-    print("Welcome to KnowledgeRAG!")
-    print("You can provide a PDF file, folder of PDFs, or a web URL (starting with http/https).")
-    
-    # Step 1: Process documents or URL
-    input_path = input("Enter file/folder path or URL: ").strip()
-    processor.load_or_process(input_path)
+# Initialize processor
+processor = KnowledgeRAGProcessor()
 
-    # Step 2: Query loop
-    while True:
-        question = input("\nEnter your query (or type 'exit' to quit): ").strip()
-        if question.lower() in ["exit", "quit"]:
-            print("Goodbye!")
-            break
+# Load existing collection or process PDFs/URLs
+processor.load_or_update(pdf_folder=PDF_FOLDER, url_file=URL_FILE)
 
-        answer = processor.process_documents(question)
-        print("\nAnswer:")
-        print(answer)
-        print("-" * 80)
+# Gradio query function
+def query_knowledge(question):
+    if not question.strip():
+        return "Please enter a question."
+    return processor.query(question)
 
-if __name__ == "__main__":
-    main()
+# Launch Gradio
+iface = gr.Interface(
+    fn=query_knowledge,
+    inputs=gr.Textbox(lines=2, placeholder="Ask anything about your documents or web content..."),
+    outputs=gr.Textbox(label="Answer"),
+    title="KnowledgeRAG Assistant",
+    description="Query your PDFs and web content using LLM + RAG."
+)
+iface.launch()
