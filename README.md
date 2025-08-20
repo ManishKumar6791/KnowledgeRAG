@@ -47,19 +47,7 @@ python main.py
 - docs/ – Sample PDFs for testing
 - urls.txt – Sample web URLs
 - vector_db/ – ChromaDB persistent storage (auto-populated)
-
-## 🚀 Run on Google Colab (Free)
-
-Don’t want to set up locally? Try it directly in Google Colab with free CPU/GPU runtime.
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ManishKumar6791/KnowledgeRAG/blob/main/notebooks/demo.ipynb)
-Inside the Colab notebook, the following commands will run the app:
-```bash
-!git clone https://github.com/yourusername/KnowledgeRAG.git
-%cd KnowledgeRAG
-!pip install -r requirements.txt
-!python main.py
-
-
+  
 ```plaintext
 Folder Structure
 KnowledgeRAG/
@@ -71,5 +59,19 @@ KnowledgeRAG/
 ├─ requirements.txt
 └─ README.md
 ```
+
+## 🚀 Run on Google Colab (Free)
+
+Don’t want to set up locally? Try it directly in Google Colab with free CPU/GPU runtime.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ManishKumar6791/KnowledgeRAG/blob/main/notebooks/demo.ipynb)
+Inside the Colab notebook, the following commands will run the app:
+```bash
+!git clone https://github.com/yourusername/KnowledgeRAG.git
+%cd KnowledgeRAG
+!pip install -r requirements.txt
+!python main.py
+```
+
+
 
 
