@@ -48,6 +48,18 @@ python main.py
 - urls.txt – Sample web URLs
 - vector_db/ – ChromaDB persistent storage (auto-populated)
 
+## **Google Colab (free cloud runtime)**
+Provide a Colab notebook (demo.ipynb) in repo.
+User clicks “Open in Colab” badge in README.
+They get free GPU/CPU runtime (for limited hours).
+They can run:
+```bash
+!git clone https://github.com/yourusername/KnowledgeRAG.git
+%cd KnowledgeRAG
+!pip install -r requirements.txt
+!python main.py
+```
+
 ```plaintext
 Folder Structure
 KnowledgeRAG/
