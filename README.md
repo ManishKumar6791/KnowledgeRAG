@@ -31,7 +31,7 @@ KnowledgeRAG is a demo system that combines document processing, web scraping, a
 
 ## **Installation**
 ```bash
-git clone https://github.com/yourusername/KnowledgeRAG.git
+git clone https://github.com/ManishKumar6791/KnowledgeRAG.git
 cd KnowledgeRAG
 pip install -r requirements.txt
 ```
