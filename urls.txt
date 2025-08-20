@@ -1,0 +1,5 @@
+https://towardsdatascience.com/langgraph-101-lets-build-a-deep-research-agent/
+https://www.analyticsvidhya.com/blog/2023/07/understanding-rag-retrieval-augmented-generation-in-llms/
+https://www.machinelearningmastery.com/introduction-to-natural-language-processing/
+https://en.wikipedia.org/wiki/Artificial_intelligence
+https://www.kaggle.com/learn/overview
